@@ -6,9 +6,9 @@ import { prisma } from "../lib/prisma.js";
 import { generateToken } from "../lib/utils.js";
 
 const registerUserSchema = zod.object({
-    name: zod.string().trim(),
+    name: zod.string().trim().min(1),
     email: zod.email().trim(),
-    password: zod.string().min(8).trim(),
+    password: zod.string().trim().min(8).max(72),
 })
 type TRegisterUser = zod.infer<typeof registerUserSchema>;
 
@@ -16,9 +16,8 @@ type TRegisterUser = zod.infer<typeof registerUserSchema>;
 
 
 export const registerUser = async (req: Request, res: Response) => {
-    const data: TRegisterUser = req.body;
     try {
-        const result = registerUserSchema.safeParse(data);
+        const result = registerUserSchema.safeParse(req.body);
         if (!result.success) {
             console.error("Zod error :::", result.error.message);
 
@@ -34,13 +33,17 @@ export const registerUser = async (req: Request, res: Response) => {
             where: { email }
         })
         if (user) {
-            return res.status(HttpStatusCode.FORBIDDEN).json({
+            return res.status(HttpStatusCode.CONFLICT).json({
                 message: "User with this email already exists"
             })
         }
 
         //hash the password
-        const hash = await bcrypt.hash(password, parseInt(process.env.SALT_ROUNDS as string))
+        const saltRounds = parseInt(process.env.SALT_ROUNDS ?? "10", 10)
+        if (isNaN(saltRounds) || saltRounds < 1) {
+            throw new Error("Invalid SALT_ROUND configuration");
+        }
+        const hash = await bcrypt.hash(password, saltRounds)
 
         const newUser = await prisma.user.create({
             data: {
@@ -59,10 +62,10 @@ export const registerUser = async (req: Request, res: Response) => {
                 message: "User creation failed."
             })
         }
-        
+
         generateToken(newUser.id, res)
-        return res.status(HttpStatusCode.SOMETHING_IS_CREATED).json({
-            message: "User created succesfully.",
+        return res.status(HttpStatusCode.CREATED).json({
+            message: "User created successfully.",
             user: {
                 id: newUser.id,
                 name: newUser.name,

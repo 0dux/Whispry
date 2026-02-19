@@ -11,12 +11,12 @@ export const generateToken = async (userId: string, res: Response) => {
             maxAge: 1000 * 60 * 60 * 24 * 7,
             httpOnly: true,
             sameSite: "strict",
-            secure: process.env.NODE_ENV === "PRODUCTION" ? true : false
+            secure: process.env.NODE_ENV === "production"
         })
 
         return token;
     } catch (error: any) {
-        console.error("Error occured during signing jwt:", error.message || error);
-        process.exit(1)
+        console.error("Error occurred during signing jwt:", error.message || error);
+        throw error;
     }
 }   
