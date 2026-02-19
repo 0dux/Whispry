@@ -6,9 +6,9 @@ import { prisma } from "../lib/prisma.js";
 import { generateToken } from "../lib/utils.js";
 
 const registerUserSchema = zod.object({
-    name: zod.string(),
-    email: zod.email(),
-    password: zod.string().min(8),
+    name: zod.string().trim(),
+    email: zod.email().trim(),
+    password: zod.string().min(8).trim(),
 })
 type TRegisterUser = zod.infer<typeof registerUserSchema>;
 
@@ -20,6 +20,8 @@ export const registerUser = async (req: Request, res: Response) => {
     try {
         const result = registerUserSchema.safeParse(data);
         if (!result.success) {
+            console.error("Zod error :::", result.error.message);
+
             return res.status(HttpStatusCode.BAD_REQUEST).json({
                 message: "Invalid inputs passed"
             })
@@ -38,7 +40,7 @@ export const registerUser = async (req: Request, res: Response) => {
         }
 
         //hash the password
-        const hash = await bcrypt.hash(password, process.env.SALT_ROUNDS as string)
+        const hash = await bcrypt.hash(password, parseInt(process.env.SALT_ROUNDS as string))
 
         const newUser = await prisma.user.create({
             data: {
@@ -57,6 +59,7 @@ export const registerUser = async (req: Request, res: Response) => {
                 message: "User creation failed."
             })
         }
+        
         generateToken(newUser.id, res)
         return res.status(HttpStatusCode.SOMETHING_IS_CREATED).json({
             message: "User created succesfully.",
