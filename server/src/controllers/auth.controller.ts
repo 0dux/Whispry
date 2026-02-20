@@ -8,16 +8,12 @@ import { ENV } from "../lib/env.js";
 import { prisma } from "../lib/prisma.js";
 import { generateToken } from "../lib/utils.js";
 
+//Register new user----------------------------------------------------
 const registerUserSchema = zod.object({
     name: zod.string().trim().min(1),
     email: zod.email().trim(),
     password: zod.string().trim().min(8).max(72),
 })
-type TRegisterUser = zod.infer<typeof registerUserSchema>;
-
-
-
-
 export const registerUser = async (req: Request, res: Response) => {
     try {
         const result = registerUserSchema.safeParse(req.body);
@@ -86,14 +82,67 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 }
 
+//Login user-----------------------------------------------------------
+const loginUserSchema = zod.object({
+    email: zod.email().trim(),
+    password: zod.string().trim().min(8).max(72),
+})
 export const logInUser = async (req: Request, res: Response) => {
-    res.json({
-        message: "Log-in route"
-    })
+    try {
+        const result = loginUserSchema.safeParse(req.body);
+        if (!result.success) {
+            return res.status(HttpStatusCode.BAD_REQUEST).json({
+                message: "Invalid inputs passed"
+            })
+        }
+
+        const { email, password } = result.data;
+
+        const userFound = await prisma.user.findFirst({
+            where: {
+                email
+            }
+        })
+
+        if (!userFound) {
+            return res.status(HttpStatusCode.BAD_REQUEST).json({
+                message: "Invalid credentials passed"
+            })
+        }
+
+        if (!userFound.password) {
+            return res.status(HttpStatusCode.CONFLICT).json({
+                message: "Used social auth during sign-up login using that only"
+            })
+        }
+        const isPasswordCorrect = bcrypt.compare(password, userFound.password)
+
+        if (!isPasswordCorrect) {
+            return res.status(HttpStatusCode.BAD_REQUEST).json({
+                message: "Invalid credentials passed"
+            })
+        }
+
+        generateToken(userFound.id, res);
+        return res.json({
+            message: "Logged-in successfully",
+            id: userFound.id,
+            name: userFound.name,
+            email: userFound.name,
+            pfp: userFound.profilePicture
+        })
+    } catch (error: any) {
+        console.error("Some error has occured during login controller::", error)
+        return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+            message: "Internal server error"
+        })
+    }
 }
 
-export const logOutUser = async (req: Request, res: Response) => {
+//Logout user----------------------------------------------------------
+export const logOutUser = async (res: Response) => {
+    res.cookie("jwt", "", { maxAge: 0 });
     res.json({
-        message: "Log-out route"
+        message: "Logged-out successfully"
     })
 }
