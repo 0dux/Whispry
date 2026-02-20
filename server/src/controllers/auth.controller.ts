@@ -112,23 +112,22 @@ export const logInUser = async (req: Request, res: Response) => {
 
         if (!userFound.password) {
             return res.status(HttpStatusCode.CONFLICT).json({
-                message: "Used social auth during sign-up login using that only"
+                message: "This account uses social authentication. Please log in with your social provider."
             })
         }
-        const isPasswordCorrect = bcrypt.compare(password, userFound.password)
+        const isPasswordCorrect = await bcrypt.compare(password, userFound.password)
 
         if (!isPasswordCorrect) {
             return res.status(HttpStatusCode.BAD_REQUEST).json({
                 message: "Invalid credentials passed"
             })
         }
-
         generateToken(userFound.id, res);
         return res.json({
             message: "Logged-in successfully",
             id: userFound.id,
             name: userFound.name,
-            email: userFound.name,
+            email: userFound.email,
             pfp: userFound.profilePicture
         })
     } catch (error: any) {
@@ -140,7 +139,7 @@ export const logInUser = async (req: Request, res: Response) => {
 }
 
 //Logout user----------------------------------------------------------
-export const logOutUser = async (res: Response) => {
+export const logOutUser = async (req: Request, res: Response) => {
     res.cookie("jwt", "", { maxAge: 0 });
     res.json({
         message: "Logged-out successfully"
