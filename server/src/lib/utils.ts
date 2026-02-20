@@ -4,7 +4,7 @@ import { ENV } from "./env.js";
 
 export const generateToken = async (userId: string, res: Response) => {
     try {
-        const token = jwt.sign({ userId: userId }, ENV.JWT_SECRET as string, {
+        const token = jwt.sign({ userId: userId }, ENV.JWT_SECRET, {
             expiresIn: "7d"
         })
 
@@ -20,4 +20,5 @@ export const generateToken = async (userId: string, res: Response) => {
         console.error("Error occurred during signing jwt:", error.message || error);
         throw error;
     }
-}   
+}
+
