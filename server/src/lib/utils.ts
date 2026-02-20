@@ -1,9 +1,10 @@
 import { Response } from "express";
 import jwt from "jsonwebtoken";
+import { ENV } from "./env.js";
 
 export const generateToken = async (userId: string, res: Response) => {
     try {
-        const token = jwt.sign({ userId: userId }, process.env.JWT_SECRET as string, {
+        const token = jwt.sign({ userId: userId }, ENV.JWT_SECRET as string, {
             expiresIn: "7d"
         })
 
@@ -11,7 +12,7 @@ export const generateToken = async (userId: string, res: Response) => {
             maxAge: 1000 * 60 * 60 * 24 * 7,
             httpOnly: true,
             sameSite: "strict",
-            secure: process.env.NODE_ENV === "production"
+            secure: ENV.NODE_ENV === "production"
         })
 
         return token;

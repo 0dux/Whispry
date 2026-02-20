@@ -1,7 +1,10 @@
 import bcrypt from "bcrypt";
+import "dotenv/config";
 import type { Request, Response } from "express";
 import zod from "zod";
+import { sendWelcomeEmail } from "../emails/emailHandlers.js";
 import { HttpStatusCode } from "../enums/http-status.enum.js";
+import { ENV } from "../lib/env.js";
 import { prisma } from "../lib/prisma.js";
 import { generateToken } from "../lib/utils.js";
 
@@ -39,11 +42,7 @@ export const registerUser = async (req: Request, res: Response) => {
         }
 
         //hash the password
-        const saltRounds = parseInt(process.env.SALT_ROUNDS ?? "10", 10)
-        if (isNaN(saltRounds) || saltRounds < 1) {
-            throw new Error("Invalid SALT_ROUND configuration");
-        }
-        const hash = await bcrypt.hash(password, saltRounds)
+        const hash = await bcrypt.hash(password, parseInt(ENV.SALT_ROUNDS))
 
         const newUser = await prisma.user.create({
             data: {
@@ -64,7 +63,7 @@ export const registerUser = async (req: Request, res: Response) => {
         }
 
         generateToken(newUser.id, res)
-        return res.status(HttpStatusCode.CREATED).json({
+        res.status(HttpStatusCode.CREATED).json({
             message: "User created successfully.",
             user: {
                 id: newUser.id,
@@ -73,6 +72,12 @@ export const registerUser = async (req: Request, res: Response) => {
                 pfp: newUser.profilePicture,
             }
         })
+        //todo: send a welcome email to user
+        try {
+            await sendWelcomeEmail(newUser.name, newUser.email, ENV.CLIENT_URL)
+        } catch (error: any) {
+            return console.error(error);
+        }
     } catch (error: any) {
         console.error("Error during signing up ::", error?.message || error);
         return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({

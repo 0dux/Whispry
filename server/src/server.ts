@@ -1,12 +1,13 @@
 import cors, { type CorsOptions } from "cors";
 import "dotenv/config";
 import express from "express";
+import { ENV } from "./lib/env.js";
 import authRouter from "./routes/auth.route.js";
 import messageRouter from "./routes/message.route.js";
 
 const app = express();
 
-const port = process.env.PORT;
+const port = parseInt(ENV.PORT);
 app.use(express.json());
 
 //configure cors
