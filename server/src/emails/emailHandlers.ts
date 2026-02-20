@@ -14,5 +14,5 @@ export const sendWelcomeEmail = async (name: string, email: string, clientURL: s
         throw new Error("Failed to send welcome email ::");
 
     }
-    console.log(`Emaill ${data.id} with customer HTML content has been sent. ::\ndata:`, data);
+    console.log(`Email ${data.id} sent successfully.`);
 }

@@ -1,4 +1,30 @@
+
+// Utility to escape HTML special characters
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// Validate URL has safe protocol
+function sanitizeUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+      return '#';
+    }
+    return url;
+  } catch {
+    return '#';
+  }
+}
+
 export const createWelcomeEmailTemplate = (clientURL: string, name: string) => {
+  const safeName = escapeHtml(name);
+  const safeClientURL = sanitizeUrl(clientURL);
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +60,7 @@ export const createWelcomeEmailTemplate = (clientURL: string, name: string) => {
               </h1>
 
               <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6; color: #4b5563;">
-                Hello ${name},
+                Hello ${safeName},
               </p>
 
               <p style="margin: 0 0 32px 0; font-size: 16px; line-height: 1.6; color: #4b5563;">
@@ -46,8 +72,7 @@ export const createWelcomeEmailTemplate = (clientURL: string, name: string) => {
                 <p style="margin: 0 0 16px 0; font-size: 13px; font-weight: 600; color: #111827; text-transform: uppercase; letter-spacing: 0.5px;">
                   Next steps
                 </p>
-                <ul style="margin: 0; padding-left: 20px; color: #4b5563; font-size: 15px; line-height: 1.8;">
-                  <li style="margin-bottom: 8px;">Set up your profile picture</li>
+                    <a href="${safeClientURL}" target="_blank" style="font-size: 15px; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 6px; padding: 14px 28px; border: 1px solid #111827; display: inline-block;">                  <li style="margin-bottom: 8px;">Set up your profile picture</li>
                   <li style="margin-bottom: 8px;">Find and add your contacts</li>
                   <li style="margin-bottom: 8px;">Start a conversation</li>
                   <li style="margin-bottom: 0;">Share photos, videos, and more</li>
@@ -58,7 +83,7 @@ export const createWelcomeEmailTemplate = (clientURL: string, name: string) => {
               <table border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 32px;">
                 <tr>
                   <td align="center" style="border-radius: 6px;" bgcolor="#111827">
-                    <a href=${clientURL} target="_blank" style="font-size: 15px; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 6px; padding: 14px 28px; border: 1px solid #111827; display: inline-block;">
+                    <a href="${clientURL}" target="_blank" style="font-size: 15px; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 6px; padding: 14px 28px; border: 1px solid #111827; display: inline-block;">
                       Open Whispry
                     </a>
                   </td>
