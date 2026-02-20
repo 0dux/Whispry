@@ -5,8 +5,9 @@ import zod from "zod";
 import { sendWelcomeEmail } from "../emails/emailHandlers.js";
 import { HttpStatusCode } from "../enums/http-status.enum.js";
 import { ENV } from "../lib/env.js";
-import { prisma } from "../lib/prisma.js";
+import { prisma } from "../configs/prisma.js";
 import { generateToken } from "../lib/utils.js";
+import cloudinary from "../configs/cloudinary.js";
 
 //Register new user----------------------------------------------------
 const registerUserSchema = zod.object({
@@ -70,12 +71,11 @@ export const registerUser = async (req: Request, res: Response) => {
         pfp: newUser.profilePicture,
       },
     });
-    //todo: send a welcome email to user
-    try {
-      await sendWelcomeEmail(newUser.name, newUser.email, ENV.CLIENT_URL);
-    } catch (error: any) {
-      return console.error(error);
-    }
+    sendWelcomeEmail(newUser.name, newUser.email, ENV.CLIENT_URL).catch(
+      (error) => {
+        console.error("Failed to send welcome email:", error);
+      },
+    );
   } catch (error: any) {
     console.error("Error during signing up ::", error?.message || error);
     return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
@@ -155,10 +155,54 @@ export const logOutUser = async (req: Request, res: Response) => {
 };
 
 export const updateProfile = async (req: Request, res: Response) => {
-  const { user } = req;
+  try {
+    const { profilePicture } = req.body;
+    if (!profilePicture) {
+      return res.status(HttpStatusCode.BAD_REQUEST).json({
+        message: "Profile Picture is required",
+      });
+    }
 
+    const uploadResponse = await cloudinary.uploader.upload(profilePicture, {
+      folder: "Whispry",
+    });
+    const { user } = req;
+    if (!user) {
+      return res.status(HttpStatusCode.UNAUTHORIZED).json({
+        message: "Unauthorized - user failed protect authentication",
+      });
+    }
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        profilePicture: uploadResponse.secure_url,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        profilePicture: true,
+      },
+    });
+
+    return res.json({
+      message: "Profile picture updated successfully",
+      user: updatedUser,
+    });
+  } catch (error: any) {
+    console.error("Error updating profile ::", error?.message || error);
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const verifyUser = (req: Request, res: Response) => {
+  const { user } = req;
   res.json({
-    messsage: "Update-profile has been hit",
+    message: "User verified",
     user,
   });
 };
