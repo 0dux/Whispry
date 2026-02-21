@@ -13,6 +13,8 @@ const requiredEnv = [
   "CLOUDINARY_NAME",
   "CLOUDINARY_API_KEY",
   "CLOUDINARY_API_SECRET",
+  "ARCJET_API_KEY",
+  "ARCJET_ENV",
 ];
 
 const missing = requiredEnv.filter((key) => !process.env[key]);
@@ -35,4 +37,6 @@ export const ENV = {
   CLOUDINARY_NAME: process.env.CLOUDINARY_NAME!,
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY!,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET!,
+  ARCJET_API_KEY: process.env.ARCJET_API_KEY!,
+  ARCJET_ENV: process.env.ARCJET_ENV!,
 };

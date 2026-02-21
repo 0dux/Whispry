@@ -9,23 +9,23 @@ const app = express();
 
 const port = parseInt(ENV.PORT);
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 
 //configure cors
-const options: CorsOptions = {
-
-}
-app.use(cors())
+const options: CorsOptions = {};
+app.use(cors());
 
 app.get("/", (req, res) => {
-    res.json({
-        message: "Server is working"
-    })
-})
+  res.json({
+    message: "Server is working",
+  });
+});
 
 app.use("/api/auth", authRouter);
 app.use("/api/messages", messageRouter);
 
 app.listen(port, () => {
-    console.log(`Server is listening on port :: ${port}`);
-})
+  console.log(
+    `Server is listening on port :: ${port}\nhttp://localhost:${port}`,
+  );
+});
