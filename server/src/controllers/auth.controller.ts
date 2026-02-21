@@ -2,12 +2,12 @@ import bcrypt from "bcrypt";
 import "dotenv/config";
 import type { Request, Response } from "express";
 import zod from "zod";
+import cloudinary from "../configs/cloudinary.js";
+import { prisma } from "../configs/prisma.js";
 import { sendWelcomeEmail } from "../emails/emailHandlers.js";
 import { HttpStatusCode } from "../enums/http-status.enum.js";
 import { ENV } from "../lib/env.js";
-import { prisma } from "../configs/prisma.js";
 import { generateToken } from "../lib/utils.js";
-import cloudinary from "../configs/cloudinary.js";
 
 //Register new user----------------------------------------------------
 const registerUserSchema = zod.object({
@@ -67,7 +67,6 @@ export const registerUser = async (req: Request, res: Response) => {
       user: {
         id: newUser.id,
         name: newUser.name,
-        email: newUser.email,
         pfp: newUser.profilePicture,
       },
     });
@@ -134,7 +133,6 @@ export const logInUser = async (req: Request, res: Response) => {
       user: {
         id: userFound.id,
         name: userFound.name,
-        email: userFound.email,
         pfp: userFound.profilePicture,
       },
     });
@@ -181,7 +179,6 @@ export const updateProfile = async (req: Request, res: Response) => {
       },
       select: {
         id: true,
-        email: true,
         name: true,
         profilePicture: true,
       },

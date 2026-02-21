@@ -14,6 +14,24 @@ model User {
   email String @unique
   password String?
   profilePicture String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  sentMessage Message[]@relation("sentMessages")
+  receivedMessage Message[]@relation("receivedMessages")
+}
+
+model Message {
+  id String @id @default(uuid())
+  text String?
+  image String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  senderId String
+  sender User @relation("sentMessages", fields: [senderId], references: [id])
+  
+  receiverId String
+  receiver User @relation("receivedMessages", fields: [receiverId], references: [id])
 }

@@ -3,22 +3,7 @@ import jwt from "jsonwebtoken";
 import { HttpStatusCode } from "../enums/http-status.enum.js";
 import { ENV } from "../lib/env.js";
 import { prisma } from "../configs/prisma.js";
-
-interface IUser {
-  id: string;
-  name: string;
-  email: string;
-  password?: string;
-  profilePicture: string;
-}
-
-declare global {
-  namespace Express {
-    interface Request {
-      user?: IUser;
-    }
-  }
-}
+import { IUser } from "../types/types.js";
 
 const protect = async (req: Request, res: Response, next: NextFunction) => {
   try {
