@@ -33,6 +33,18 @@ export const getMessagesByUserId = async (req: Request, res: Response) => {
   try {
     const { id: myId } = req.user!;
     const receiverId = req.params.id as string;
+
+    if (!receiverId) {
+      return res.status(HttpStatusCode.BAD_REQUEST).json({
+        message: "Receiver ID is required",
+      });
+    }
+
+    const MAX_LIMIT = 100;
+    const parsedLimit = parseInt(req.query.limit as string, 10) || 50;
+    const limit = Math.min(Math.max(1, parsedLimit), MAX_LIMIT);
+    const cursor = req.query.cursor as string | undefined;
+    
     const messages = await prisma.message.findMany({
       where: {
         OR: [
@@ -46,6 +58,8 @@ export const getMessagesByUserId = async (req: Request, res: Response) => {
       orderBy: {
         createdAt: "asc",
       },
+      take: limit,
+      ...(cursor && { cursor: { id: cursor }, skip: 1 }),
     });
 
     return res.json({
@@ -59,6 +73,14 @@ export const getMessagesByUserId = async (req: Request, res: Response) => {
     });
   }
 };
+// Allowed image MIME types and max size (~5MB in base64 chars)
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+];
+const MAX_IMAGE_BASE64_LENGTH = 5 * 1024 * 1024 * (4 / 3); // ~6.67M chars
 
 export const sendMessage = async (req: Request, res: Response) => {
   try {
@@ -66,20 +88,60 @@ export const sendMessage = async (req: Request, res: Response) => {
     const { text, image } = req.body;
     const receiverId = req.params.id as string;
 
-    let imageUrl;
-    if (image) {
+    // 1. At least one of text or image must be present
+    const hasText = typeof text === "string" && text.trim().length > 0;
+    const hasImage = typeof image === "string" && image.length > 0;
+    if (!hasText && !hasImage) {
+      return res.status(HttpStatusCode.BAD_REQUEST).json({
+        message: "Message must contain text or an image",
+      });
+    }
+
+    // 2. Verify receiver exists
+    const receiver = await prisma.user.findUnique({
+      where: { id: receiverId },
+    });
+    if (!receiver) {
+      return res.status(HttpStatusCode.NOT_FOUND).json({
+        message: "Receiver not found",
+      });
+    }
+
+    // 3. Validate image before uploading
+    let imageUrl: string | undefined;
+    if (hasImage) {
+      // base64 data URIs look like: "data:image/png;base64,iVBORw..."
+      const mimeMatch = image.match(
+        /^data:([a-zA-Z0-9]+\/[a-zA-Z0-9+.-]+);base64,/,
+      );
+      const mimeType = mimeMatch?.[1];
+
+      if (!mimeType || !ALLOWED_IMAGE_TYPES.includes(mimeType)) {
+        return res.status(HttpStatusCode.BAD_REQUEST).json({
+          message: `Invalid image type. Allowed: ${ALLOWED_IMAGE_TYPES.join(", ")}`,
+        });
+      }
+
+      if (image.length > MAX_IMAGE_BASE64_LENGTH) {
+        return res.status(HttpStatusCode.BAD_REQUEST).json({
+          message: "Image exceeds the 5MB size limit",
+        });
+      }
+
       const uploadResponse = await cloudinary.uploader.upload(image, {
         folder: "Whispry",
+        allowed_formats: ["jpg", "png", "webp", "gif"],
       });
       imageUrl = uploadResponse.secure_url;
     }
 
+    // 4. All checks passed — create the message
     const newMessage = await prisma.message.create({
       data: {
-        text,
+        text: hasText ? text.trim() : undefined,
         image: imageUrl,
         senderId: myId,
-        receiverId: receiverId,
+        receiverId,
       },
     });
 
@@ -98,9 +160,45 @@ export const sendMessage = async (req: Request, res: Response) => {
 
 export const getAllChats = async (req: Request, res: Response) => {
   try {
+    const { id: myId } = req.user!;
+    const receiverId = req.params.id as string;
+    const messages = await prisma.message.findMany({
+      where: {
+        OR: [
+          {
+            senderId: myId,
+          },
+          {
+            receiverId: myId,
+          },
+        ],
+      },
+    });
 
+    const chatPartnersIds = [
+      ...new Set(
+        messages.map((msg) =>
+          msg.senderId === myId ? msg.receiverId : msg.senderId,
+        ),
+      ),
+    ];
+    const chatPartners = await prisma.user.findMany({
+      where: {
+        id: { in: chatPartnersIds },
+      },
+      select: {
+        id: true,
+        name: true,
+        profilePicture: true,
+      },
+    });
+
+    return res.json({
+      message: "Chat partners fetched successfully",
+      chatPartners,
+    });
   } catch (error: any) {
-    console.error("Error during sending messages::", error);
+    console.error("Error during fetching chats::", error);
     return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       message: "Internal Server error",
     });

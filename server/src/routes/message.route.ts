@@ -11,7 +11,7 @@ const messageRouter = Router();
 
 messageRouter.get("/contacts", protect, getAllContacts);
 messageRouter.post("/send/:id", protect, sendMessage);
-messageRouter.get("/chats", getAllChats);
+messageRouter.get("/chats", protect, getAllChats);
 messageRouter.get("/:id", protect, getMessagesByUserId);
 
 export default messageRouter;
