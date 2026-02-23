@@ -15,6 +15,7 @@ const registerUserSchema = zod.object({
   email: zod.email().trim(),
   password: zod.string().trim().min(8).max(72),
 });
+
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const result = registerUserSchema.safeParse(req.body);
