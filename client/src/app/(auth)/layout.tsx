@@ -5,24 +5,24 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
-  const { checkUser, isCheckingUser, authUser } = useAuth();
+  const { verifyUser, isVerifyingUser, authUser } = useAuth();
   const router = useRouter();
 
   // Check auth status on mount
   useEffect(() => {
-    checkUser();
+    verifyUser();
   }, []);
 
   // If already authenticated, redirect to chat
   useEffect(() => {
-    if (isCheckingUser) return;
+    if (isVerifyingUser) return;
     if (authUser) {
       router.replace("/chat");
     }
-  }, [authUser, isCheckingUser, router]);
+  }, [authUser, isVerifyingUser, router]);
 
   // Show loader while checking auth
-  if (isCheckingUser) {
+  if (isVerifyingUser) {
     return (
       <div className="h-screen w-full flex items-center justify-center">
         <Loader2 size={20} className="animate-spin" />

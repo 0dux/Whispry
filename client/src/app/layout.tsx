@@ -29,7 +29,7 @@ export default function RootLayout({
     <html lang="en" data-theme="lofi" className="min-h-screen w-full">
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-y-hidden m-0 p-0`}
       >
         <Toaster />
         <Particles className="fixed inset-0 z-10" color="#000000" />

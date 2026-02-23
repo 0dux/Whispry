@@ -5,31 +5,34 @@ import { create } from "zustand";
 
 interface IAuthStore {
   authUser: IAuthUser | null;
-  isCheckingUser: boolean;
+
+  isVerifyingUser: boolean;
   isSigningUp: boolean;
   isLoggingIn: boolean;
-  checkUser: () => Promise<void>;
+
+  verifyUser: () => Promise<void>;
   signUp: (data: ISignUpForm) => Promise<void>;
-  Login: (data: ILoginForm) => Promise<void>;
+  login: (data: ILoginForm) => Promise<void>;
 }
 
 export const useAuth = create<IAuthStore>((set) => ({
   authUser: null,
 
   //verify user
-  isCheckingUser: true,
+  isVerifyingUser: true,
   isSigningUp: false,
   isLoggingIn: false,
-  checkUser: async () => {
+
+  verifyUser: async () => {
     try {
       const response = await api.get("/api/auth/verify");
-      console.log(response);
+      // console.log(response);
       set({ authUser: response.data });
     } catch (error: any) {
-      console.error(error);
+      // console.error(error);
       set({ authUser: null });
     } finally {
-      set({ isCheckingUser: false });
+      set({ isVerifyingUser: false });
     }
   },
 
@@ -51,7 +54,7 @@ export const useAuth = create<IAuthStore>((set) => ({
     }
   },
 
-  Login: async (data) => {
+  login: async (data) => {
     set({ isLoggingIn: true });
     try {
       const response = await api.post("/api/auth/login", data);

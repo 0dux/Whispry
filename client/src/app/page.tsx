@@ -5,23 +5,23 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const LandingPage = () => {
-  const { checkUser, isCheckingUser, authUser } = useAuth();
+  const { verifyUser, isVerifyingUser, authUser } = useAuth();
   const router = useRouter();
 
   // Check auth status on mount
   useEffect(() => {
-    checkUser();
+    verifyUser();
   }, []);
 
   // Redirect based on auth status
   useEffect(() => {
-    if (isCheckingUser) return;
+    if (isVerifyingUser) return;
     if (authUser) {
       router.replace("/chat");
     } else {
       router.replace("/login");
     }
-  }, [authUser, isCheckingUser, router]);
+  }, [authUser, isVerifyingUser, router]);
 
   // Show loader while checking / redirecting
   return (

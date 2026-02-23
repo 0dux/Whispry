@@ -33,8 +33,8 @@ const SignUpPage = () => {
   return (
     <div className="flex items-center justify-center w-full min-h-screen p-4 bg-base-100 text-base-content">
       {/* Card Wrapper */}
-      <div className="relative flex items-center justify-center w-full max-w-6xl h-162.5 md:h-192">
-        <GlowEffect mode="colorShift" className="z-20" />
+      <div className="relative flex items-center justify-center w-full max-w-6xl h-144 md:h-160 ">
+        <GlowEffect duration={10} mode="colorShift" className="z-20" />
 
         {/* Card Content */}
         <div className="z-30 flex flex-col w-full h-full rounded-2xl bg-base-200 md:flex-row">
@@ -155,13 +155,19 @@ const SignUpPage = () => {
             </div>
           </div>
 
-          {/* Right Column: Image */}
-          <div className="relative hidden w-full h-full md:flex md:w-1/2">
+          {/* Right Column: Image with Grid Background */}
+          <div
+            className="relative hidden w-full h-full md:flex md:w-1/2 rounded-r-2xl overflow-hidden bg-base-300/30"
+            style={{
+              backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.15) 1px, transparent 1px)`,
+              backgroundSize: "24px 24px",
+            }}
+          >
             <Image
               src="/signup-page.png"
               alt="Animation"
               fill
-              className="object-cover rounded-r-2xl"
+              className="object-cover "
               priority
             />
           </div>

@@ -5,22 +5,22 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const ChatPage = () => {
-  const { checkUser, isCheckingUser, authUser } = useAuth();
+  const { verifyUser, isVerifyingUser, authUser } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    checkUser();
+    verifyUser();
   }, []);
 
   // If not authenticated, redirect to login
   useEffect(() => {
-    if (isCheckingUser) return;
+    if (isVerifyingUser) return;
     if (!authUser) {
       router.replace("/login");
     }
-  }, [authUser, isCheckingUser, router]);
+  }, [authUser, isVerifyingUser, router]);
 
-  if (isCheckingUser) {
+  if (isVerifyingUser) {
     return (
       <div className="h-screen w-full flex items-center justify-center">
         <Loader2 size={20} className="animate-spin" />
