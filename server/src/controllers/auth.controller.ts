@@ -70,7 +70,7 @@ export const registerUser = async (req: Request, res: Response) => {
         pfp: newUser.profilePicture,
       },
     });
-    sendWelcomeEmail(newUser.name, newUser.email, ENV.CLIENT_URL).catch(
+    return sendWelcomeEmail(newUser.name, newUser.email, ENV.CLIENT_URL).catch(
       (error) => {
         console.error("Failed to send welcome email:", error);
       },
@@ -147,7 +147,7 @@ export const logInUser = async (req: Request, res: Response) => {
 //Logout user----------------------------------------------------------
 export const logOutUser = async (req: Request, res: Response) => {
   res.cookie("jwt", "", { maxAge: 0 });
-  res.json({
+  return res.json({
     message: "Logged-out successfully",
   });
 };
@@ -198,8 +198,9 @@ export const updateProfile = async (req: Request, res: Response) => {
 
 export const verifyUser = (req: Request, res: Response) => {
   const { user } = req;
-  res.json({
+  return res.json({
     message: "User verified",
+    success: true,
     user,
   });
 };

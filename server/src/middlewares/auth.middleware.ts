@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { prisma } from "../configs/prisma.js";
 import { HttpStatusCode } from "../enums/http-status.enum.js";
 import { ENV } from "../lib/env.js";
-import { prisma } from "../configs/prisma.js";
 import { IUser } from "../types/types.js";
 
 const protect = async (req: Request, res: Response, next: NextFunction) => {
@@ -11,6 +11,7 @@ const protect = async (req: Request, res: Response, next: NextFunction) => {
     if (!token) {
       return res.status(HttpStatusCode.UNAUTHORIZED).json({
         message: "Unauthorized - No token provided",
+        success: false,
       });
     }
 
@@ -31,6 +32,7 @@ const protect = async (req: Request, res: Response, next: NextFunction) => {
     if (!user) {
       return res.status(HttpStatusCode.UNAUTHORIZED).json({
         message: "User not found",
+        success: false,
       });
     }
     req.user = user as IUser;
@@ -39,16 +41,19 @@ const protect = async (req: Request, res: Response, next: NextFunction) => {
     if (error.name === "TokenExpiredError") {
       return res.status(HttpStatusCode.UNAUTHORIZED).json({
         message: "Unauthorized - Token expired",
+        success: false,
       });
     }
     if (error.name === "JsonWebTokenError") {
       return res.status(HttpStatusCode.UNAUTHORIZED).json({
         message: "Unauthorized - Invalid token",
+        success: false,
       });
     }
     console.error("Error auth middleware", error);
     return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       message: "Internal server error",
+      success: false,
     });
   }
 };

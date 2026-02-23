@@ -12,8 +12,11 @@ app.use(express.json());
 app.use(cookieParser());
 
 //configure cors
-const options: CorsOptions = {};
-app.use(cors());
+const options: CorsOptions = {
+  origin: ["http://localhost:3000", "http://localhost:8080"],
+  credentials: true,
+};
+app.use(cors(options));
 
 app.get("/", (req, res) => {
   res.json({

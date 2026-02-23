@@ -27,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="lofi" className="min-h-screen w-full">
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Particles className="fixed inset-0 z-10" color="#000000" />

@@ -4,22 +4,24 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const ChatPage = () => {
+const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const { checkUser, isCheckingUser, authUser } = useAuth();
   const router = useRouter();
 
+  // Check auth status on mount
   useEffect(() => {
     checkUser();
   }, []);
 
-  // If not authenticated, redirect to login
+  // If already authenticated, redirect to chat
   useEffect(() => {
     if (isCheckingUser) return;
-    if (!authUser) {
-      router.replace("/login");
+    if (authUser) {
+      router.replace("/chat");
     }
   }, [authUser, isCheckingUser, router]);
 
+  // Show loader while checking auth
   if (isCheckingUser) {
     return (
       <div className="h-screen w-full flex items-center justify-center">
@@ -28,11 +30,17 @@ const ChatPage = () => {
     );
   }
 
+  // If not authenticated, render the auth page (login/signup)
   if (!authUser) {
-    return null; // don't render anything while redirecting
+    return <>{children}</>;
   }
 
-  return <div>Chat Page</div>;
+  // Fallback loader while redirecting
+  return (
+    <div className="h-screen w-full flex items-center justify-center">
+      <Loader2 size={20} className="animate-spin" />
+    </div>
+  );
 };
 
-export default ChatPage;
+export default AuthLayout;

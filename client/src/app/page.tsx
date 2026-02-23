@@ -1,20 +1,32 @@
 "use client";
+import { useAuth } from "@/store/useAuthStore";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import { useEffect } from "react";
 
 const LandingPage = () => {
+  const { checkUser, isCheckingUser, authUser } = useAuth();
   const router = useRouter();
+
+  // Check auth status on mount
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  // Redirect based on auth status
+  useEffect(() => {
+    if (isCheckingUser) return;
+    if (authUser) {
+      router.replace("/chat");
+    } else {
+      router.replace("/login");
+    }
+  }, [authUser, isCheckingUser, router]);
+
+  // Show loader while checking / redirecting
   return (
-    <div className="min-h-screen w-full relative flex items-center justify-center gap-4">
-      <button onClick={() => router.push("/login")} className="btn btn-primary">
-        Login
-      </button>
-      <button onClick={() => router.push("/signup")} className="btn btn-ghost">
-        Sing up
-      </button>
-      <button onClick={() => router.push("/chat")} className="btn btn-info">
-        Chat
-      </button>
+    <div className="h-screen w-full flex items-center justify-center">
+      <Loader2 size={20} className="animate-spin" />
     </div>
   );
 };
