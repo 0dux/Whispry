@@ -17,8 +17,9 @@ interface IUseChatStore {
   setActiveTab: (tab: "chat" | "contacts") => Promise<void>;
   setSelectedUser: (selectedUser: IAuthUser | null) => Promise<void>;
 
-  getAllContacts: () => Promise<void>;  
+  getAllContacts: () => Promise<void>;
   getChatPartners: () => Promise<void>;
+  getMessagesByUserId: (userId: string | null) => Promise<void>;
 }
 
 export const useChat = create<IUseChatStore>((set) => ({
@@ -65,6 +66,19 @@ export const useChat = create<IUseChatStore>((set) => ({
         error?.response?.data?.message ||
           "Some error has occured during user signup",
       );
+    } finally {
+      set({ isMessagesLoading: false });
+    }
+  },
+
+  getMessagesByUserId: async (userId) => {
+    set({ isMessagesLoading: true });
+    try {
+      const response = await api.get(`/api/messages/${userId}`);
+      set({ messages: response.data.messages });
+    } catch (error: any) {
+      console.error("Error during fetching messages::", error);
+      toast.error("Some error has occured during fetching messages.");
     } finally {
       set({ isMessagesLoading: false });
     }
