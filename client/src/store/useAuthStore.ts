@@ -9,10 +9,13 @@ interface IAuthStore {
   isVerifyingUser: boolean;
   isSigningUp: boolean;
   isLoggingIn: boolean;
+  isUpdating: boolean;
 
   verifyUser: () => Promise<void>;
   signUp: (data: ISignUpForm) => Promise<void>;
   login: (data: ILoginForm) => Promise<void>;
+  logout: () => Promise<void>;
+  updateProfile: (profilePicture: string) => Promise<void>;
 }
 
 export const useAuth = create<IAuthStore>((set) => ({
@@ -22,6 +25,7 @@ export const useAuth = create<IAuthStore>((set) => ({
   isVerifyingUser: true,
   isSigningUp: false,
   isLoggingIn: false,
+  isUpdating: false,
 
   verifyUser: async () => {
     try {
@@ -69,6 +73,32 @@ export const useAuth = create<IAuthStore>((set) => ({
       );
     } finally {
       set({ isLoggingIn: false });
+    }
+  },
+
+  logout: async () => {
+    try {
+      await api.post("/api/auth/logout");
+      set({ authUser: null });
+      toast.success("Logged out successfully");
+    } catch (error: any) {
+      toast.error("Error logging out");
+      console.error(error);
+    }
+  },
+  updateProfile: async (profilePicture) => {
+    set({ isUpdating: true });
+    try {
+      const response = await api.put("/api/auth/update-profile", {
+        profilePicture,
+      });
+      set({ authUser: response.data.user });
+      toast.success("Profile updated successfully");
+    } catch (error: any) {
+      console.error("Error updating profile::", error);
+      toast.error(error.response?.data?.message);
+    } finally {
+      set({ isUpdating: false });
     }
   },
 }));
