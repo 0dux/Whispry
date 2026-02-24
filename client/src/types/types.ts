@@ -12,5 +12,15 @@ export interface ILoginForm {
 export interface IAuthUser {
   id: string;
   name: string;
-  pfp: string | null;
+  profilePicture: string | null;
+}
+
+export interface IMessage {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  text: string | null;
+  image: string | null;
+  senderId: string;
+  receiverId: string;
 }

@@ -68,7 +68,7 @@ export const registerUser = async (req: Request, res: Response) => {
       user: {
         id: newUser.id,
         name: newUser.name,
-        pfp: newUser.profilePicture,
+        profilePicture: newUser.profilePicture,
       },
     });
     return sendWelcomeEmail(newUser.name, newUser.email, ENV.CLIENT_URL).catch(
@@ -134,7 +134,7 @@ export const logInUser = async (req: Request, res: Response) => {
       user: {
         id: userFound.id,
         name: userFound.name,
-        pfp: userFound.profilePicture,
+        profilePicture: userFound.profilePicture,
       },
     });
   } catch (error: any) {

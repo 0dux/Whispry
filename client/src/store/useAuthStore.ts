@@ -18,7 +18,7 @@ interface IAuthStore {
 export const useAuth = create<IAuthStore>((set) => ({
   authUser: null,
 
-  //verify user
+  //loading states
   isVerifyingUser: true,
   isSigningUp: false,
   isLoggingIn: false,
@@ -27,7 +27,7 @@ export const useAuth = create<IAuthStore>((set) => ({
     try {
       const response = await api.get("/api/auth/verify");
       // console.log(response);
-      set({ authUser: response.data });
+      set({ authUser: response.data.user });
     } catch (error: any) {
       // console.error(error);
       set({ authUser: null });
