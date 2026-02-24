@@ -11,12 +11,11 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   // Check auth status on mount
   useEffect(() => {
     verifyUser();
-  }, []);
+  }, [verifyUser]);
 
   // If already authenticated, redirect to chat
   useEffect(() => {
-    if (isVerifyingUser) return;
-    if (authUser) {
+    if (!isVerifyingUser && authUser) {
       router.replace("/chat");
     }
   }, [authUser, isVerifyingUser, router]);
