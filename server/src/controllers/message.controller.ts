@@ -39,12 +39,6 @@ export const getMessagesByUserId = async (req: Request, res: Response) => {
         message: "Receiver ID is required",
       });
     }
-
-    const MAX_LIMIT = 100;
-    const parsedLimit = parseInt(req.query.limit as string, 10) || 50;
-    const limit = Math.min(Math.max(1, parsedLimit), MAX_LIMIT);
-    const cursor = req.query.cursor as string | undefined;
-    
     const messages = await prisma.message.findMany({
       where: {
         OR: [
@@ -58,8 +52,6 @@ export const getMessagesByUserId = async (req: Request, res: Response) => {
       orderBy: {
         createdAt: "asc",
       },
-      take: limit,
-      ...(cursor && { cursor: { id: cursor }, skip: 1 }),
     });
 
     return res.json({

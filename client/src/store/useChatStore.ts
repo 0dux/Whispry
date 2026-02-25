@@ -20,9 +20,13 @@ interface IUseChatStore {
   getAllContacts: () => Promise<void>;
   getChatPartners: () => Promise<void>;
   getMessagesByUserId: (userId: string | null) => Promise<void>;
+  sendMessage: (messageData: {
+    text?: string;
+    image?: string | null;
+  }) => Promise<void>;
 }
 
-export const useChat = create<IUseChatStore>((set) => ({
+export const useChat = create<IUseChatStore>((set, get) => ({
   //states
   allContacts: [],
   allChats: [],
@@ -81,6 +85,23 @@ export const useChat = create<IUseChatStore>((set) => ({
       toast.error("Some error has occured during fetching messages.");
     } finally {
       set({ isMessagesLoading: false });
+    }
+  },
+  sendMessage: async (data) => {
+    const { selectedUser, messages } = get();
+    try {
+      if (!data.text && !data.image) {
+        toast.error("Cannot send an empty message");
+        return;
+      }
+      const response = await api.post(
+        `/api/messages/send/${selectedUser?.id}`,
+        data,
+      );
+      set({ messages: messages.concat(response.data.newMessage) });
+    } catch (error: any) {
+      console.error("Error during sending messages::", error);
+      toast.error("Some error has occured during sending messages.");
     }
   },
 }));
