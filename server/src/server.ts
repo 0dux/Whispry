@@ -48,26 +48,25 @@ if (isProduction) {
   // Serve files from the public folder
   app.use(express.static(clientPublicDir));
 
-  // Dynamically import the Next.js server handler
-  const nextServerPath = path.join(clientDistDir, "server.js");
-
   const initNextHandler = async () => {
     try {
-      // The standalone server.js exports a default handler or we can
-      // import the Next.js server module directly
-      // @ts-expect-error - Next.js doesn't export types for internal server module; this is a runtime-only import
-      const NextServer = (await import("next/dist/server/next-server.js"))
-        .default;
+      // Use Next.js programmatic API
+      // The default export of "next" is callable at runtime but its types
+      // declare it as a namespace, so we cast it to a function.
+      const nextModule = await import("next");
+      const createNextApp = nextModule.default as unknown as (
+        opts: Record<string, unknown>,
+      ) => { prepare: () => Promise<void>; getRequestHandler: () => Function };
 
-      const nextApp = new NextServer({
-        dir: clientDistDir,
+      const nextApp = createNextApp({
         dev: false,
+        dir: clientDistDir,
         conf: {
-          // Minimal config — standalone build has its own config baked in
           distDir: ".next",
         },
       });
 
+      await nextApp.prepare();
       const nextHandler = nextApp.getRequestHandler();
 
       // Catch-all: serve Next.js pages for anything that isn't an API route
