@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node ./dist/server.js",
     "server": "nodemon --exec tsx ./src/server.ts",
-    "build": "tsc"
+    "build": "tsc && cp -r src/generated dist/"
   },
   "keywords": [],
   "author": "",
