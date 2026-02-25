@@ -19,6 +19,10 @@ io.use(socketAuth);
 
 const userSocketMap: Record<string, string> = {};
 
+export const getReceiverSocketId = (userId: string) => {
+  return userSocketMap[userId];
+};
+
 io.on("connection", (socket: Socket) => {
   console.log("A user connected::", socket.user?.name);
 

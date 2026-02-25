@@ -25,6 +25,8 @@ interface IUseChatStore {
     text?: string;
     image?: string | null;
   }) => Promise<void>;
+  subscribeToMessages: () => Promise<void>;
+  unSubscribeToMessages: () => Promise<void>;
 }
 
 export const useChat = create<IUseChatStore>((set, get) => ({
@@ -120,5 +122,24 @@ export const useChat = create<IUseChatStore>((set, get) => ({
       console.error("Error during sending messages::", error);
       toast.error("Some error has occured during sending messages.");
     }
+  },
+
+  subscribeToMessages: async () => {
+    const { selectedUser } = get();
+    if (!selectedUser) return;
+
+    const socket = useAuth.getState().socket;
+    if (!socket) return;
+    socket.on("newMessage", (newMessage: IMessage) => {
+      if (newMessage.senderId !== selectedUser.id) return;
+      const currentMessages = get().messages;
+      set({ messages: [...currentMessages, newMessage] });
+    });
+  },
+
+  unSubscribeToMessages: async () => {
+    const socket = useAuth.getState().socket;
+    if (!socket) return;
+    socket.off("newMessage");
   },
 }));

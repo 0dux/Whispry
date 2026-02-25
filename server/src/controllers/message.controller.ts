@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import cloudinary from "../configs/cloudinary.js";
 import { prisma } from "../configs/prisma.js";
+import { getReceiverSocketId, io } from "../configs/socket.js";
 import { HttpStatusCode } from "../enums/http-status.enum.js";
 
 export const getAllContacts = async (req: Request, res: Response) => {
@@ -137,11 +138,15 @@ export const sendMessage = async (req: Request, res: Response) => {
       },
     });
 
-    return res.json({
+    res.json({
       message: "Message sent successfully",
       newMessage,
     });
-    //to-do: send message to user in real time - using socket.io
+
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
   } catch (error: any) {
     console.error("Error during sending messages::", error);
     return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({

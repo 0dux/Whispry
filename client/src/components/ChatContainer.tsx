@@ -7,22 +7,40 @@ import MessagesLoadingSkeleton from "./MessagesLoadingSkeleton";
 import NoChatHistoryPlaceHolder from "./NoChatHistoryPlaceHolder";
 
 const ChatContainer = () => {
-  const { selectedUser, isMessagesLoading, messages, getMessagesByUserId } =
-    useChat();
+  const {
+    selectedUser,
+    isMessagesLoading,
+    messages,
+    getMessagesByUserId,
+    subscribeToMessages,
+    unSubscribeToMessages,
+  } = useChat();
   const { authUser } = useAuth();
   const messageEndRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     if (selectedUser?.id === undefined) {
       return;
     }
     getMessagesByUserId(selectedUser?.id);
-  }, [selectedUser, getMessagesByUserId]);
+    subscribeToMessages();
+
+    return () => {
+      unSubscribeToMessages();
+    };
+  }, [
+    selectedUser,
+    getMessagesByUserId,
+    subscribeToMessages,
+    unSubscribeToMessages,
+  ]);
 
   useEffect(() => {
     if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
+
   return (
     <div className="flex-1 flex flex-col h-full bg-base-100/50">
       <ChatHeader />
