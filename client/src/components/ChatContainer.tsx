@@ -1,6 +1,6 @@
 import { useAuth } from "@/store/useAuthStore";
 import { useChat } from "@/store/useChatStore";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessagesLoadingSkeleton from "./MessagesLoadingSkeleton";
@@ -10,7 +10,7 @@ const ChatContainer = () => {
   const { selectedUser, isMessagesLoading, messages, getMessagesByUserId } =
     useChat();
   const { authUser } = useAuth();
-
+  const messageEndRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (selectedUser?.id === undefined) {
       return;
@@ -18,6 +18,11 @@ const ChatContainer = () => {
     getMessagesByUserId(selectedUser?.id);
   }, [selectedUser, getMessagesByUserId]);
 
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
   return (
     <div className="flex-1 flex flex-col h-full bg-base-100/50">
       <ChatHeader />
@@ -47,11 +52,15 @@ const ChatContainer = () => {
                   )}
                   {msg.text && <p className="mt-2">{msg.text}</p>}
                   <p className="text-xs mt-1 opacity-75 flex items-center gap-1">
-                    {new Date(msg.createdAt).toISOString().slice(11, 16)}
+                    {new Date(msg.createdAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </p>
                 </div>
               </div>
             ))}
+            <div ref={messageEndRef} />
           </div>
         ) : isMessagesLoading ? (
           <MessagesLoadingSkeleton />

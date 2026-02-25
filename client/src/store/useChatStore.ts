@@ -2,6 +2,7 @@ import api from "@/lib/axios";
 import { IAuthUser, IMessage } from "@/types/types";
 import toast from "react-hot-toast";
 import { create } from "zustand";
+import { useAuth } from "./useAuthStore";
 
 interface IUseChatStore {
   //states
@@ -89,6 +90,21 @@ export const useChat = create<IUseChatStore>((set, get) => ({
   },
   sendMessage: async (data) => {
     const { selectedUser, messages } = get();
+    //optimistic update of message
+    const { authUser } = useAuth.getState();
+    const temp = `temp-${authUser?.id}`;
+
+    const optimisticMessage: IMessage = {
+      id: temp,
+      senderId: authUser?.id!,
+      receiverId: selectedUser?.id!,
+      text: data.text || null,
+      image: data.image || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    set({ messages: [...messages, optimisticMessage] });
     try {
       if (!data.text && !data.image) {
         toast.error("Cannot send an empty message");
@@ -100,6 +116,7 @@ export const useChat = create<IUseChatStore>((set, get) => ({
       );
       set({ messages: messages.concat(response.data.newMessage) });
     } catch (error: any) {
+      set({ messages: messages });
       console.error("Error during sending messages::", error);
       toast.error("Some error has occured during sending messages.");
     }
