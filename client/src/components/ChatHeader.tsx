@@ -1,10 +1,11 @@
+import { useAuth } from "@/store/useAuthStore";
 import { useChat } from "@/store/useChatStore";
 import { User, X } from "lucide-react";
 import { useEffect } from "react";
 
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChat();
-
+  const { onlineUsers } = useAuth();
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSelectedUser(null);
@@ -18,7 +19,9 @@ const ChatHeader = () => {
       {selectedUser && (
         <>
           <div className="flex items-center space-x-3">
-            <div className="avatar online">
+            <div
+              className={`avatar ${onlineUsers.includes(selectedUser.id) ? "avatar-online" : "avatar-offline"}`}
+            >
               <div className="w-12 h-12 rounded-full overflow-hidden bg-base-200 flex items-center justify-center">
                 {selectedUser.profilePicture ? (
                   <img
@@ -35,7 +38,9 @@ const ChatHeader = () => {
               <h3 className="text-base-content font-medium">
                 {selectedUser.name}
               </h3>
-              <p className="text-base-content/60 text-sm">Online</p>
+              <p className="text-base-content/60 text-sm">
+                {onlineUsers.includes(selectedUser.id) ? "Online" : "Offline"}
+              </p>
             </div>
           </div>
 

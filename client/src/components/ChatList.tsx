@@ -1,3 +1,4 @@
+import { useAuth } from "@/store/useAuthStore";
 import { useChat } from "@/store/useChatStore";
 import { User } from "lucide-react";
 import { useEffect } from "react";
@@ -7,7 +8,7 @@ import UserLoadingSkeleton from "./UserLoadingSkeleton";
 const ChatList = () => {
   const { getChatPartners, allChats, isUserLoading, setSelectedUser } =
     useChat();
-
+  const { onlineUsers } = useAuth();
   useEffect(() => {
     getChatPartners();
   }, [getChatPartners]);
@@ -29,8 +30,9 @@ const ChatList = () => {
           onClick={() => setSelectedUser(chat)}
         >
           <div className="flex items-center gap-3">
-            {/* TODO: FIX THIS ONLINE STATUS AND MAKE IT WORK WITH SOCKET */}
-            <div className={`avatar online`}>
+            <div
+              className={`avatar ${onlineUsers.includes(chat.id) ? "avatar-online" : "avatar-offline"}`}
+            >
               <div className="w-12 h-12 rounded-full overflow-hidden bg-base-100 flex items-center justify-center">
                 {chat.profilePicture ? (
                   <img
