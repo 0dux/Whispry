@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "install:all": "npm install --prefix client && npm install --prefix server",
-    "build:client": "npm run build --prefix client",
+    "build:client": "npm run build --prefix client && cp -r client/public client/.next/standalone/public",
     "build:server": "npm run build --prefix server",
     "build:prisma": "npx --prefix server prisma generate --schema=./server/prisma/schema.prisma",
     "build": "npm run install:all && npm run build:client && npm run build:prisma && npm run build:server",
