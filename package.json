@@ -1,0 +1,29 @@
+{
+  "name": "whispry",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install --prefix client && npm install --prefix server",
+    "build:client": "npm run build --prefix client",
+    "build:server": "npm run build --prefix server",
+    "build:prisma": "npx --prefix server prisma generate --schema=./server/prisma/schema.prisma",
+    "build": "npm run install:all && npm run build:client && npm run build:prisma && npm run build:server",
+    "start": "node ./server/dist/server.js",
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run server --prefix server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0dux/Whispry.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/0dux/Whispry/issues"
+  },
+  "homepage": "https://github.com/0dux/Whispry#readme"
+}

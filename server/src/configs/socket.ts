@@ -7,9 +7,13 @@ import socketAuth from "../middlewares/socket.middleware.js";
 const app = express();
 const server = http.createServer(app);
 
+const isProduction = ENV.NODE_ENV === "production";
+
 const io = new Server(server, {
   cors: {
-    origin: [ENV.CLIENT_URL],
+    origin: isProduction
+      ? [ENV.CLIENT_URL]
+      : [ENV.CLIENT_URL, "http://localhost:3000", "http://localhost:8080"],
     credentials: true,
   },
 });
