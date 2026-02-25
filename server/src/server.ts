@@ -34,11 +34,8 @@ if (isProduction) {
   const __dirname = path.dirname(__filename);
 
   // Path to the standalone Next.js build output
-  // From server/dist/server.js → ../../client/.next/standalone/client
-  const clientDistDir = path.join(
-    __dirname,
-    "../../client/.next/standalone/client",
-  );
+  // From server/dist/server.js → ../../client/.next/standalone
+  const clientDistDir = path.join(__dirname, "../../client/.next/standalone");
   const clientStaticDir = path.join(__dirname, "../../client/.next/static");
   const clientPublicDir = path.join(__dirname, "../../client/public");
 
