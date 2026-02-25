@@ -3,7 +3,7 @@ export interface IUser {
   name: string;
   email?: string;
   password?: string;
-  profilePicture: string;
+  profilePicture: string | null;
 }
 
 export interface IMessage {
@@ -19,3 +19,11 @@ declare global {
     }
   }
 }
+
+declare module "socket.io" {
+  interface Socket {
+    user?: IUser;
+    userId?: string;
+  }
+}
+
