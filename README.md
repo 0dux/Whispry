@@ -13,6 +13,10 @@
   <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
 </p>
 
+<p align="center">
+  <img src="demo.gif" alt="Whispry Demo" />
+</p>
+
 ---
 
 ## 📖 Table of Contents
