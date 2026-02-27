@@ -4,12 +4,12 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Next.js-16-white?logo=next.js&logoColor=white" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react" alt="React" />
-  <img src="https://img.shields.io/badge/Express-5-000000?logo=express" alt="Express" />
-  <img src="https://img.shields.io/badge/Socket.IO-4-010101?logo=socket.io" alt="Socket.IO" />
+  <img src="https://img.shields.io/badge/Express-5-gray?logo=express&logoColor=white" alt="Express" />
+  <img src="https://img.shields.io/badge/Socket.IO-4-25c2a0?logo=socket.io&logoColor=white" alt="Socket.IO" />
   <img src="https://img.shields.io/badge/PostgreSQL-blue?logo=postgresql&logoColor=white" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma" alt="Prisma" />
+  <img src="https://img.shields.io/badge/Prisma-7-5A67D8?logo=prisma&logoColor=white" alt="Prisma" />
   <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
 </p>
 
@@ -65,14 +65,14 @@
 
 | Technology                                                                                                                  | Purpose                         |
 | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| <img src="https://cdn.simpleicons.org/nextdotjs/000000" width="14" alt=""> [Next.js 16](https://nextjs.org/)                | React framework with App Router |
+| <img src="https://cdn.simpleicons.org/nextdotjs/FFFFFF" width="14" alt=""> [Next.js 16](https://nextjs.org/)                | React framework with App Router |
 | <img src="https://cdn.simpleicons.org/react/61DAFB" width="14" alt=""> [React 19](https://react.dev/)                       | UI library                      |
 | <img src="https://cdn.simpleicons.org/typescript/3178C6" width="14" alt=""> [TypeScript 5](https://www.typescriptlang.org/) | Type safety                     |
 | <img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" width="14" alt=""> [Tailwind CSS 4](https://tailwindcss.com/)     | Utility-first CSS               |
 | <img src="https://cdn.simpleicons.org/daisyui/5A0EF8" width="14" alt=""> [DaisyUI 5](https://daisyui.com/)                  | Tailwind component library      |
-| <img src="https://cdn.simpleicons.org/shadcnui/000000" width="14" alt=""> [shadcn/ui](https://ui.shadcn.com/)               | Accessible UI primitives        |
-| <img src="https://cdn.simpleicons.org/zustand/453B37" width="14" alt=""> [Zustand](https://zustand-demo.pmnd.rs/)           | Lightweight state management    |
-| <img src="https://cdn.simpleicons.org/socketdotio/010101" width="14" alt=""> [Socket.IO Client](https://socket.io/)         | Real-time client                |
+| <img src="https://cdn.simpleicons.org/shadcnui/FFFFFF" width="14" alt=""> [shadcn/ui](https://ui.shadcn.com/)               | Accessible UI primitives        |
+| <img src="https://cdn.simpleicons.org/zustand/F5A623" width="14" alt=""> [Zustand](https://zustand-demo.pmnd.rs/)           | Lightweight state management    |
+| <img src="https://cdn.simpleicons.org/socketdotio/25C2A0" width="14" alt=""> [Socket.IO Client](https://socket.io/)         | Real-time client                |
 | <img src="https://cdn.simpleicons.org/framer/0055FF" width="14" alt=""> [Framer Motion](https://motion.dev/)                | Animations                      |
 | <img src="https://cdn.simpleicons.org/axios/5A29E4" width="14" alt=""> [Axios](https://axios-http.com/)                     | HTTP client                     |
 | <img src="https://cdn.simpleicons.org/lucide/F56565" width="14" alt=""> [Lucide React](https://lucide.dev/)                 | Icon library                    |
@@ -82,14 +82,14 @@
 
 | Technology                                                                                                            | Purpose                        |
 | --------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| <img src="https://cdn.simpleicons.org/express/000000" width="14" alt=""> [Express 5](https://expressjs.com/)          | Web framework                  |
-| <img src="https://cdn.simpleicons.org/socketdotio/010101" width="14" alt=""> [Socket.IO 4](https://socket.io/)        | Real-time WebSocket server     |
-| <img src="https://cdn.simpleicons.org/prisma/2D3748" width="14" alt=""> [Prisma 7](https://www.prisma.io/)            | ORM for PostgreSQL             |
+| <img src="https://cdn.simpleicons.org/express/FFFFFF" width="14" alt=""> [Express 5](https://expressjs.com/)          | Web framework                  |
+| <img src="https://cdn.simpleicons.org/socketdotio/25C2A0" width="14" alt=""> [Socket.IO 4](https://socket.io/)        | Real-time WebSocket server     |
+| <img src="https://cdn.simpleicons.org/prisma/5A67D8" width="14" alt=""> [Prisma 7](https://www.prisma.io/)            | ORM for PostgreSQL             |
 | <img src="https://cdn.simpleicons.org/postgresql/4169E1" width="14" alt=""> [PostgreSQL](https://www.postgresql.org/) | Relational database            |
-| <img src="https://cdn.simpleicons.org/jsonwebtokens/000000" width="14" alt=""> [JSON Web Tokens](https://jwt.io/)     | Authentication                 |
+| <img src="https://cdn.simpleicons.org/jsonwebtokens/D63AFF" width="14" alt=""> [JSON Web Tokens](https://jwt.io/)     | Authentication                 |
 | 🔒 [bcrypt](https://github.com/kelektiv/node.bcrypt.js)                                                               | Password hashing               |
 | <img src="https://cdn.simpleicons.org/cloudinary/3448C5" width="14" alt=""> [Cloudinary](https://cloudinary.com/)     | Image storage & CDN            |
-| <img src="https://cdn.simpleicons.org/resend/000000" width="14" alt=""> [Resend](https://resend.com/)                 | Transactional emails           |
+| <img src="https://cdn.simpleicons.org/resend/FFFFFF" width="14" alt=""> [Resend](https://resend.com/)                 | Transactional emails           |
 | 🛡️ [Arcjet](https://arcjet.com/)                                                                                      | Rate limiting & bot protection |
 | <img src="https://cdn.simpleicons.org/zod/3E67B1" width="14" alt=""> [Zod](https://zod.dev/)                          | Schema validation              |
 
