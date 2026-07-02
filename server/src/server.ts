@@ -30,7 +30,7 @@ if (isProduction) {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
 
-  const clientDistDir = path.join(__dirname, "../../client/.next/standalone");
+  const clientDistDir = path.join(__dirname, "../../client/.next/standalone/client");
   const clientStaticDir = path.join(__dirname, "../../client/.next/static");
   const clientPublicDir = path.join(__dirname, "../../client/public");
 
