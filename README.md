@@ -58,7 +58,6 @@
 | **Input Validation**               | Server-side validation with Zod schemas                   |
 | **Optimistic UI Updates**          | Instant message rendering before server confirmation      |
 | **Responsive Design**              | Mobile-friendly UI with Tailwind CSS, DaisyUI & shadcn/ui |
-| **Dark / Light / Lofi Themes**     | Multiple theme support via DaisyUI                        |
 | **Particle Effects**               | Ambient particle background animation                     |
 
 ---
